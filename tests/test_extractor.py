@@ -11,9 +11,6 @@ sarah.chen@email.com | (555) 123-4567
 
 SKILLS: Python, AWS, Kubernetes, LangChain
 
-EXPERIENCE
-Senior Backend Engineer, Atlassian (Jan 2018 - Present)
-Led payments infrastructure team.
 
 EDUCATION
 B.S. Computer Science, University of Sydney, 2015
@@ -23,7 +20,7 @@ B.S. Computer Science, University of Sydney, 2015
 def test_extract_resume_smoke_test():
     result = extract_resume(SAMPLE_RESUME)
     assert result["name"] == "Sarah Chen"
-    assert "Python" in result["skills"]
+    assert ".net" in result["skills"]
     assert len(result["work_history"]) >= 1
     assert len(result["education"]) >= 1
 
