@@ -95,8 +95,12 @@ def validate_output(data: dict) -> list[str]:
 
     # Flag suspicious placeholder-looking values (a common hallucination pattern
     # when a field is genuinely missing from the source text)
-    suspicious_values = {"n/a", "unknown", "not provided", "not specified", "none", ""}
-    if data.get("name", "").strip().lower() in suspicious_values:
-        issues.append("'name' field looks like a placeholder rather than a real extracted value")
-
+    suspicious_terms = {"na", "unknown", "not provided", "not specified", "none provided"}
+    name_value = data.get("name", "")
+    normalized_name = "".join(ch for ch in name_value.lower() if ch.isalnum() or ch.isspace()).strip()
+    if not normalized_name or any(term in normalized_name for term in suspicious_terms):
+        issues.append(
+            f"'name' field looks like a placeholder rather than a real extracted value (got: {name_value!r})"
+        )
+ 
     return issues
