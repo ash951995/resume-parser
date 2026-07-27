@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import anthropic
-
+from .cost_logger import log_call
 load_dotenv()
 
 _client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
@@ -24,5 +24,19 @@ def call_claude(messages, system="", model=None, max_tokens=1000, tools=None, to
         kwargs["tools"] = tools
     if tool_choice:
         kwargs["tool_choice"] = tool_choice
+
+    response = _client.messages.create(**kwargs);
+
+    log_entry = log_call(
+        model=kwargs["model"],
+        input_tokens=response.usage.input_tokens,
+        output_tokens=response.usage.output_tokens
+      
+    )
+
+    print(
+        f"[cost] {log_entry['model']} | in={log_entry['input_tokens']} "
+        f"out={log_entry['output_tokens']} | est. cost=${log_entry['estimated_cost_usd']:.6f}"
+    )
 
     return _client.messages.create(**kwargs)
