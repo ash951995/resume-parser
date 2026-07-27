@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import anthropic
 from .cost_logger import log_call
+from .rate_limiter import enforce_limits
 load_dotenv()
 
 _client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
@@ -14,6 +15,7 @@ def call_claude(messages, system="", model=None, max_tokens=1000, tools=None, to
     Haiku for cost efficiency, override with model="claude-sonnet-5"
     for a quality check.
     """
+    enforce_limits()
     kwargs = {
         "model": model or _DEFAULT_MODEL,
         "max_tokens": max_tokens,
